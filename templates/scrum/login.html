@@ -1,0 +1,77 @@
+{% load staticfiles %}
+<html lang="en" >
+
+<head>
+  <meta charset="UTF-8">
+  <title>Login/Registration Form Transition</title>
+    <link rel="stylesheet" type="text/css" href="{% static "css/style.css" %}">	
+</head>
+
+<body onload="myFunction()">
+<script>
+function myFunction() {
+
+	var styleElem = document.head.appendChild(document.createElement("style"));
+	styleElem.innerHTML = ".img:before {background-image: url('{% static 'images/bg2.jpg' %}');}";
+	
+}
+</script>
+  
+<div class="cont">
+  <div class="form sign-in">
+    <h2>Welcome to Scrum Buddy</h2>
+	<p style="color: red;text-align:center;">{{error}}</p>
+	<form id="login_form" method="post" action="{% url 'login' %}">
+	{% csrf_token %}
+    <label>
+      <span>User Name</span>
+       <input type="text" name="username">
+    </label>
+    <label>
+      <span>Password</span>
+      <input type="password" name="password"/>
+    </label>	
+    <button type="submit" class="submit">Sign In</button>
+    <button type="button" class="fb-btn">Connect with <span>Moodle</span></button>
+	</form>
+  </div>
+  <div class="sub-cont">
+    <div class="img">
+      <div class="img__text m--up">
+        <h2>New here?</h2>
+        <p>Sign up and discover great experience of Scrum Framework!</p>
+      </div>
+      <div class="img__text m--in">
+        <h2>One of us?</h2>
+        <p>If you already has an account, just sign in.</p>
+      </div>
+      <div class="img__btn">
+        <span class="m--up">Sign Up</span>
+        <span class="m--in">Sign In</span>
+      </div>
+    </div>
+	<div class="form sign-up">
+	<form id="user_form" method="post" action="{% url 'register' %}" enctype="multipart/form-data">
+	{% csrf_token %}
+      <h2>Time to become Scrum Professional</h2>
+      {% for field in user_form %}
+      <small style="color: grey">{{ field.label_tag }}</small>
+		
+        {{ field }}        
+        {% for error in field.errors %}
+          <p style="color: red">{{ error }}</p>
+        {% endfor %}
+      
+	  {% endfor %}
+	  
+      <button type="submit" name="submit" value="Register" class="submit">Sign Up</button>
+      <button type="button" class="fb-btn">Join with <span>Moodle</span></button>
+    </form>
+	</div>
+  </div>
+</div>
+
+    <script src="{% static "js/index.js" %}"></script>
+</body>
+
+</html>

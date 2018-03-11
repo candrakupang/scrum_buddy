@@ -1,0 +1,106 @@
+{% extends 'scrum/base.html' %}
+
+{% block body_block %}		
+	
+{% if user.is_authenticated %}	
+	
+<h4 align="center"><b onclick="myFunction()" id="mytitle">--</b></h4><br>
+<div class="row">	
+	<div class="col-sm-12">
+		<div class="panel panel-primary">
+	  	    <div class="panel-heading" align="center" style="background-color:#ffc266"><font color="#0000b3"><b>Project Backlog</b></font></div>										
+			<table class="table table-bordered table-condensed table-hover"> 
+				<tr style="background-color:#ffe0b3;">
+					<th class="text-center">No</th><th class="text-center">Task</th><th class="text-center">Priority</th>
+					<th class="text-center">Status</th><th class="text-center">Point</th>
+				</tr>
+			   <tbody id="ProjectList"></tbody>
+			   {% if stories %}
+			   <script>var counter = 0;</script>
+				{% for story in stories %}												
+					<script>
+					counter++;
+					row = $("<tr class='table'></tr>"); 
+					$("#ProjectList").append(row);
+					row.append($("<td align='center'>"+counter+"</td>"));
+					row.append($("<td align='left'>{{ story.header }}</td>"));
+					row.append($("<td align='left'>{{ story.priority }}</td>"));
+					if ('{{ story.theme }}' == "sticky-note-pink-theme")
+						row.append($("<td align='left'>Not Started</td>"));
+					else if ('{{ story.theme }}' == "sticky-note-blue-theme")   
+						row.append($("<td align='left'>Started</td>"));
+					else
+						row.append($("<td align='left'>Finished</td>"));
+					row.append($("<td align='left'>{{ story.point }}</td>"));					
+					</script>
+				{% endfor %}							
+			{% endif %}
+			</table>
+		</div>
+		
+		<div>
+			<button onclick="sprint()" type="button" class="btn btn-success">Sprint</button>		
+			<button onclick="us()" type="button" class="btn btn-danger">User Story</button>			
+		</div>
+	</div>
+</div>
+
+
+	
+
+		  <!-- Modal -->
+		  <div class="modal fade" id="myProject" role="dialog">
+			<div class="modal-dialog">			
+			  <!-- Modal content-->
+			  <div class="modal-content">
+				<div class="modal-header" style="background-color:#ffc266;text-align:center;">
+				  <button type="button" class="close" data-dismiss="modal">&times;</button>
+				  <h4 class="modal-title"><b>Project List</b></h4>
+				</div>
+				<div class="modal-body">
+					<div id="cblist"></div>
+				</div>
+			{% if projects %}
+				{% for project in projects %}												
+					<script>
+					$('#cblist').append('<input type="checkbox" value={{project.pk}} /> {{project.name}}<br />');
+					</script>
+				{% endfor %}							
+			{% endif %}				
+				<div class="modal-footer">
+					<button onclick="selectProject()" type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Select</button>
+				</div>
+			  </div>
+			</div>
+		  </div>
+
+<script>
+	var projectID;
+
+	function init(){
+		$('#mytitle').html("Project : {{ prj.name }}");
+		projectID = "{{prj.pk}}";
+		if ("{{prj.pk}}" == "")
+			$('#myProject').modal('show'); 		
+	}
+	
+	function selectProject(){
+		$("#cblist input:checked").each(function() {
+			window.location.href = "/scrum/backlog/" + $(this).val();
+		});		
+	}
+	
+	function sprint(){
+		window.location.href = "/scrum/sprint/" + projectID;
+	}
+	
+	function us(){
+		window.location.href = "/scrum/board/" + projectID;
+	}
+	
+	function myFunction() {
+		$('#myProject').modal('show');
+	}
+</script>
+{% endif %}	
+{% endblock %}

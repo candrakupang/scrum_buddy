@@ -1,0 +1,259 @@
+{% extends 'scrum/base.html' %}
+{% load staticfiles %}
+	{% block body_block %}	
+		<h4 align="center"><b id="mytitle">--</b></h4>
+		<div class="row">
+		
+			<div class="col-sm-12">
+				<div class="panel panel-primary">
+			  	    <div class="panel-heading" align="center" style="background-color:#b3d9ff"><font color="#0000b3"><b>User Story</b></font></div>
+						<table class="table table-bordered table-condensed table-hover">							    
+							    <tbody id="ProjectDetails"></tbody>
+						</table>									
+				</div>
+			</div>			
+		</div>
+		
+		<div class="row">
+		
+			<div class="col-sm-12">
+				<div class="panel panel-primary">
+			  	    <div class="panel-heading" align="center" style="background-color:#99ff99"><font color="#0000b3"><b>User Story Board</b></font></div>
+						<div style="height: 52%;width:100%" id="divStickyNotesContainer"></div>						
+						<div align="right" >
+							<p id="init"></p>
+							<button onclick="save()" type="button" class="btn btn-success">Save</button>
+							<button type="button" class="btn btn-warning" id="new">New</button>
+							<button type="button" class="btn btn-danger" data-toggle="modal" data-target="#myModal">Delete</button>
+							<button type="button" id="pl" data-toggle="modal" data-target="#myProject" style="display:none"></button>
+						</div>
+				</div>
+			</div>			
+		</div>
+		
+		 <!-- Modal -->
+		  <div class="modal fade" id="myModal" role="dialog">
+			<div class="modal-dialog">
+			
+			  <!-- Modal content-->
+			  <div class="modal-content">
+				<div class="modal-header" style="background-color:#ffc266;text-align:center;">
+				  <button type="button" class="close" data-dismiss="modal">&times;</button>
+				  <h4 class="modal-title"><b>Delete User Story</b></h4>
+				</div>
+				<div class="modal-body">
+					<div id="cblist"></div>
+				</div>				
+				<div class="modal-footer">
+					<button onclick="selectProject()" type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Delete</button>
+				</div>
+			  </div>
+			  
+			</div>
+		  </div>
+		
+		 <!-- Modal -->
+		  <div class="modal fade" id="myProject" role="dialog">
+			<div class="modal-dialog">			
+			  <!-- Modal content-->
+			  <div class="modal-content">
+				<div class="modal-header" style="background-color:#ffc266;text-align:center;">
+				  <button type="button" class="close" data-dismiss="modal">&times;</button>
+				  <h4 class="modal-title"><b>Project List</b></h4>
+				</div>
+				<div class="modal-body">
+					<div id="plist"></div>
+				</div>
+			{% if projects %}
+				{% for project in projects %}												
+					<script>
+					$('#plist').append('<input id="a1" type="checkbox" value={{project.pk}} /> {{project.name}}<br />');
+					</script>
+				{% endfor %}							
+			{% endif %}				
+				<div class="modal-footer">
+					<button onclick="selectProject()" type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Select</button>
+				</div>
+			  </div>
+			</div>
+		  </div>
+				
+	</div>
+	
+    <script src="{% static "js/jquery-1.5.2.min.js" %}"></script>
+    <script src="{% static "js/jquery-ui-1.7.3.min.js" %}"></script>
+    <script src="{% static "js/jquery.stickynote.js" %}"></script>
+	<script>
+	
+		$.ajaxSetup({
+			async: false
+		});
+	
+		var pid;
+		var notes = [];
+		var mynote = {
+				resizable: true,						
+				availableThemes: [
+				{ text: "Finish", value: "sticky-note-green-theme" },
+				{ text: "On Progress", value: "sticky-note-blue-theme" },
+				{ text: "New", value: "sticky-note-pink-theme" }],					
+				defaultTheme: { text: "New", value: "sticky-note-pink-theme" },
+				notePosition: { top: "60px", left: "50px" },
+				noteDimension: { width: "200px", height: "140px" },
+				noteText: "As ... \nI want ... \n\nPoint : 0\nPriority : High",
+				noteHeaderText: "header",	
+				idUserStory: "0",
+				status: "1",
+		};
+		
+		 $(function () {
+			$('#divStickyNotesContainer').coaStickyNote({});		
+		});
+
+		function selectProject(){
+			$("#plist input:checked").each(function() {
+				window.location.href = "/scrum/board/" + $(this).val();
+			});		
+		}
+		
+		$("tr.table").click(function() {
+			var tableData = $(this).children("td").map(function() {
+				return $(this).text();
+			}).get();			
+			window.location.href = "/scrum/board/"+$.trim(tableData[0]);
+		});		
+		
+		function fix(tmp){
+			if (tmp.indexOf('.') != -1)
+				tmp = tmp.substring(0, tmp.indexOf('.'))+"px";
+			return tmp;
+		}
+		
+		function getPoint(str){
+			var result = "";
+			str = str.split("\n");
+			for (i=0;i<str.length;i++){
+				if (str[i].substring(0,7).trim() == "Point :")
+					result = str[i].substring(7,str[i].length).trim();
+			}
+			return result;
+		}
+		
+		function getPriority(str){
+			var result = "";
+			str = str.split("\n");
+			for (i=0;i<str.length;i++){
+				if (str[i].substring(0,10).trim() == "Priority :")
+					result = str[i].substring(10,str[i].length).trim();
+			}
+			return result;
+		}		
+		
+		function save(){
+			var index = 1;
+			var noteObject = $('#divStickyNotesContainer').data('coaStickyNote').getNoteBoxByIndex(index);		
+			while (noteObject != null) {					
+				if (noteObject.data("coaStickyNote")["settings"]["status"] == "1") {					
+					$.ajax({
+						type: 'post',
+						url: '/scrum/board/{{prj.id}}/',
+						data: {
+						text:noteObject.data("coaStickyNote")["settings"]["noteText"],
+						header:noteObject.data("coaStickyNote")["settings"]["noteHeaderText"],
+						top:fix(noteObject.data("coaStickyNote")["settings"]["notePosition"]["top"]),
+						left:fix(noteObject.data("coaStickyNote")["settings"]["notePosition"]["left"]),
+						width:fix(noteObject.data("coaStickyNote")["settings"]["noteDimension"]["width"]),
+						heigth:fix(noteObject.data("coaStickyNote")["settings"]["noteDimension"]["height"]),
+						theme:noteObject.data("coaStickyNote")["settings"]["defaultTheme"]["value"],
+						id:noteObject.data("coaStickyNote")["settings"]["idUserStory"],
+						point:getPoint(noteObject.data("coaStickyNote")["settings"]["noteText"]),
+						priority:getPriority(noteObject.data("coaStickyNote")["settings"]["noteText"]),
+						csrfmiddlewaretoken: '{{ csrf_token }}'
+					  },
+					  success: function (response) {}
+					});						
+				}	
+				index++;
+				noteObject = $('#divStickyNotesContainer').data('coaStickyNote').getNoteBoxByIndex(index);
+			} 			
+			alert("data is saved");
+			location.reload(); 
+		}
+				
+		function del(){
+			$("#cblist input:checked").each(function() {
+				$.ajax({
+						type: 'post',
+						url: '/scrum/xstory/',
+						data: {id: $(this).val(),csrfmiddlewaretoken: '{{ csrf_token }}'},
+						success: function (response) {
+							
+					  }
+					});
+			});		
+			alert("data is deleted");location.reload();			
+		}		
+				
+		function init(){				
+			$('#mytitle').html("Project : {{ prj.name }}");
+			var finish=0,working=0,newStory = 0;
+			$.ajax({
+				url: '/scrum/getstory/',
+				data: {'id': "{{ prj.pk }}"},
+				success: function (data) {															
+				for (i = 0; i < Object.keys(data).length; i++) {										
+					var note = {
+						resizable: true,						
+						availableThemes: [				
+						{ text: "Finish", value: "sticky-note-green-theme" },
+						{ text: "On Progress", value: "sticky-note-blue-theme" },
+						{ text: "New", value: "sticky-note-pink-theme" }],					
+						defaultTheme: { text: "", value: data[i].fields.theme },
+						notePosition: { top: data[i].fields.top, left: data[i].fields.left },
+						noteDimension: { width: data[i].fields.width, height: data[i].fields.heigth},
+						noteText: data[i].fields.text,
+						noteHeaderText: data[i].fields.header,	
+						idUserStory: data[i].pk, 
+						status: "0",
+						onNoteBoxDraggingStop: function (note) {note.settings.status = "1";},
+						onThemeSelectionChange: function (note) {note.settings.status = "1";},
+						onNoteBoxResizeStop: function (note) {note.settings.status = "1";},
+						onNoteBoxHeaderUpdate: function (note) {note.settings.status = "1";},
+						onNoteBoxTextUpdate: function (note) {note.settings.status = "1";},
+						};
+						notes.push(note);
+						$('#cblist').append('<input id="a1" type="checkbox" value='+data[i].pk+' /> '+data[i].fields.text+'<br />');
+						if (data[i].fields.theme == "sticky-note-pink-theme")
+							newStory++;
+						else if (data[i].fields.theme == "sticky-note-blue-theme")   
+							working++;
+						else
+							finish++;
+						}
+						addRow(newStory,working,finish);
+					}			
+				});
+			$("#init").click();	
+			if ("{{prj.pk}}" == "")
+				$("#pl").click();
+		}	
+
+		function addRow(newStory,working,finish){
+			var row = $("<tr/>"); 
+			$("#ProjectDetails").append(row);
+			row.append($("<td align='center'>New</td>"));
+			row.append($("<td align='center'>On Progress</td>"));
+			row.append($("<td align='center'>Finish</td>"));
+			row.append($("<td align='center'>Total</td>"));
+			
+			var row = $("<tr/>"); 
+			$("#ProjectDetails").append(row);
+			row.append($("<td align='center'>"+newStory+"</td>"));
+			row.append($("<td align='center'>"+working+"</td>"));
+			row.append($("<td align='center'>"+finish+"</td>"));
+			row.append($("<td align='center'>"+(newStory+finish+working)+"</td>"));
+		}
+			
+	</script>
+  
+{% endblock %}

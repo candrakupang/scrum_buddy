@@ -1,0 +1,34 @@
+{% extends 'scrum/base.html' %}
+{% load staticfiles %}
+
+{% block body_block %}
+		<h1>Add a Story</h1>
+		<div>
+			<form id="story_form" method="post" action="/scrum/addstory/{{project.id}}/">						
+				 {% csrf_token %}
+				 {% for hidden in form.hidden_fields %}
+					{{ hidden }}
+				 {% endfor %}
+				 {% for field in form.visible_fields %}
+					{{ field.errors }}
+					{{ field.help_text }}
+					{{ field.label_tag }}{{ field }}<br>
+				 {% endfor %}
+				 <input type="submit" name="submit" value="Create Story" />
+			</form>
+		</div>
+		<button onclick="save()" type="button" class="btn btn-success">Save</button>
+		<script>
+			function save(){
+					
+					document.getElementById("id_text").value = "some value";
+					document.getElementById("id_header").value = "some value";
+					document.getElementById("id_top").value = "some value";
+					document.getElementById("id_left").value = "some value";
+					document.getElementById("id_width").value = "some value";
+					document.getElementById("id_heigth").value = "some value";
+					document.getElementById("id_theme").value = "some value";
+				}
+		</script>
+{% endblock %}
+

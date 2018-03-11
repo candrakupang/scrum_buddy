@@ -1,0 +1,17 @@
+{% extends 'scrum/base.html' %}
+{% load staticfiles %}
+{% block body_block %}		
+
+ <div class="row">	
+	{% if user.is_authenticated %}
+	<div class="col-sm-12">	
+		<div align="center"><img src="{% static "images/process.png" %}"/></div>
+	</div>
+	{% else %}
+		<div align="center"><img src="{% static "images/Agile.png" %}"/></div>
+	{% endif %}
+
+</div>
+
+{% endblock %}
+

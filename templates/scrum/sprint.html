@@ -1,0 +1,177 @@
+{% extends 'scrum/base.html' %}
+
+{% block body_block %}		
+	
+{% if user.is_authenticated %}	
+	<h4 align="center"><b onclick="myFunction()" id="mytitle">--</b></h4><br>
+<div class="row">	
+
+	<div class="col-sm-12">
+		<div class="panel panel-primary">
+	  	    <div class="panel-heading" align="center" style="background-color:#ffc266"><font color="#0000b3"><b>Project List</b></font></div>										
+			<table class="table table-bordered table-condensed table-hover"> 
+				<tr style="background-color:#ffe0b3;">
+					<th class="text-center">Sprint</th><th class="text-center">Task</th><th class="text-center">Priority</th>
+					<th class="text-center">Start Date</th><th class="text-center">End Date</th><th class="text-center">Status</th>
+					<th class="text-center">Release Date</th><th class="text-center">Delete</th>
+				</tr>
+			   <tbody id="ProjectList"></tbody>
+			   {% if sprints %}
+				{% for sprint in sprints %}												
+					<script>
+					row = $("<tr class='table'></tr>"); 
+					$("#ProjectList").append(row);
+					row.append($("<td align='center'>{{ sprint.iteration }}</td>"));
+					row.append($("<td align='left'>{{ sprint.story.header }}</td>"));
+					row.append($("<td align='left'>{{ sprint.story.priority }}</td>"));	
+					row.append($("<td align='left'>{{ sprint.startDate }}</td>"));								
+					row.append($("<td align='left'>{{ sprint.endDate }}</td>"));
+					if ('{{ sprint.story.theme }}' == "sticky-note-pink-theme")
+						row.append($("<td align='left'>Not Started</td>"));
+					else if ('{{ sprint.story.theme }}' == "sticky-note-blue-theme")   
+						row.append($("<td align='left'>Started</td>"));
+					else
+						row.append($("<td align='left'>Finished</td>"));
+					row.append($("<td align='left'>{{ sprint.releaseDate }}</td>"));
+					row.append($("<td align='center'><input type='checkbox' value='{{sprint.id}}'/></td>"));
+					</script>
+				{% endfor %}							
+			{% endif %}
+			</table>
+		</div>
+		
+		<div>
+			<button onclick="add()" type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal">New</button>		
+			<button onclick="edit()" type="button" class="btn btn-warning" data-toggle="modal" data-target="#myModal">Edit</button>
+			<button onclick="del()" type="button" class="btn btn-danger">Delete</button>			
+		</div>
+	</div>
+</div>
+
+<br>
+	
+ <!-- Modal -->
+		  <div class="modal fade" id="myModal" role="dialog">
+			<div class="modal-dialog">
+			
+			  <!-- Modal content-->
+			  <div class="modal-content">
+				<div class="modal-header" style="background-color:#ffc266;text-align:center;">
+				  <button type="button" class="close" data-dismiss="modal">&times;</button>
+				  <h3 class="modal-title">Sprint Details</h3>
+				</div>
+				<div class="modal-body" align="center">
+					<form id="sprint_form" method="post">
+						{% csrf_token %}					  
+						<table>
+						{% for field in form.visible_fields %}
+						<tr>
+							<td>{{ field.label_tag }}</td><td>  &nbsp</td><td>{{ field }}</td>
+						</tr>	
+						{% endfor %}
+						</table>
+						<div align="right">
+							<button type="submit" class="btn btn-danger">Save</button>
+						</div>
+					</form>					
+				</div>								
+			  </div>
+			  
+			</div>
+		  </div>
+
+		  <!-- Modal -->
+		  <div class="modal fade" id="myProject" role="dialog">
+			<div class="modal-dialog">			
+			  <!-- Modal content-->
+			  <div class="modal-content">
+				<div class="modal-header" style="background-color:#ffc266;text-align:center;">
+				  <button type="button" class="close" data-dismiss="modal">&times;</button>
+				  <h4 class="modal-title"><b>Project List</b></h4>
+				</div>
+				<div class="modal-body">
+					<div id="cblist"></div>
+				</div>
+			{% if projects %}
+				{% for project in projects %}												
+					<script>
+					$('#cblist').append('<input type="checkbox" value={{project.pk}} /> {{project.name}}<br />');
+					</script>
+				{% endfor %}							
+			{% endif %}				
+				<div class="modal-footer">
+					<button onclick="selectProject()" type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Select</button>
+				</div>
+			  </div>
+			</div>
+		  </div>
+
+<script>
+	var projectID;
+
+	function init(){
+		$('#mytitle').html("Project : {{ prj.name }}");
+		$("#id_id").hide();
+		$('label[for="id_id"]').hide();
+		if ("{{prj.pk}}" == "")
+			$('#myProject').modal('show'); 		
+	}
+	
+	function selectProject(){
+		$("#cblist input:checked").each(function() {
+			window.location.href = "/scrum/sprint/" + $(this).val();
+		});		
+	}
+	
+	function del(){
+		var isDelete = 0;
+		var checked = jQuery('input:checkbox:checked').map(function () {
+			isDelete = 1;
+			$.ajax({
+				type: 'post',
+				url: '/scrum/xsprint/',
+				data: {id: $(this).val(),csrfmiddlewaretoken: '{{ csrf_token }}'},
+				success: function (response) {}
+			});
+		}).get();	
+		if (isDelete == 1){
+			alert("Sprint is deleted");location.reload();
+		} else
+			alert("There is no sprint selected");
+	}
+	
+	function add(){
+		$('#id_id').val(0);
+		$('#id_story').val("");
+		$('#id_iteration').val("");
+		$('#id_status').val("");
+		$('#id_startDate').val("");
+		$('#id_endDate').val("");
+		$('#id_releaseDate').val("");
+	}
+	
+	function edit(){
+		var isEdit = 0;
+		var checked = jQuery('input:checkbox:checked').map(function () {
+			isEdit = 1;
+			$.ajax({
+				url: '/scrum/getsprint/',
+				data: {id: $(this).val()},
+				success: function (data) {
+					$('#id_id').val(data[0].pk);
+					$('#id_story').val(data[0].fields.story);
+					$('#id_iteration').val(data[0].fields.iteration);
+					$('#id_startDate').val(data[0].fields.startDate);
+					$('#id_endDate').val(data[0].fields.endDate);
+					$('#id_releaseDate').val(data[0].fields.releaseDate);				
+				}
+			});
+		}).get();	
+	}
+	
+	function myFunction() {
+		$('#myProject').modal('show');
+	}
+</script>
+{% endif %}	
+{% endblock %}

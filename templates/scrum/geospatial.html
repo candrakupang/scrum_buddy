@@ -1,0 +1,82 @@
+{% extends 'scrum/base.html' %}
+{% load staticfiles %}
+{% block body_block %}		
+	
+	<div class="row">	
+
+		<div class="col-sm-6">
+				<div class="panel panel-primary">
+			  	    <div class="panel-heading" align="center" style="background-color:#99ff99"><font color="black"><b  id="mytitle">Geo Project</b></font></div>
+						<div style="height: 83%;width:100%" id="map" class="map"></div>										
+				</div>
+		</div>
+		<div class="col-sm-6">
+			<div class="panel panel-primary" id="div3">
+			    <div class="panel-heading" align="center" style="background-color:#99ff99"><font color="black"><b>Project List</b></font></div>
+				<table class="table table-bordered table-condensed table-hover"> 
+					<tbody id="ProjectList"></tbody>
+				</table>
+			</div>
+		
+			<div class="panel panel-primary" id="div1" style="display:none">
+			    <div class="panel-heading" align="center" style="background-color:#99ff99"><font color="black"><b>Project Details</b></font></div>
+				<table class="table table-bordered table-condensed table-hover"> 
+					<tbody id="ProjectDetails"></tbody>
+				</table>
+			</div>
+			<div class="panel panel-primary" id="div2" style="display:none">
+			    <div class="panel-heading" align="center" style="background-color:#99ff99"><font color="black"><b>User Story</b></font></div>
+					<canvas id="chart-area" />													
+			</div>
+		</div>
+	</div>
+	
+	
+	
+
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDV2eQsorN85cuup0zFn4n_gm1EdJ-Ekrk&callback=initMap"></script>
+	<script type="text/javascript">	
+		
+		function init(){
+			var ctx = document.getElementById("chart-area").getContext("2d");
+			myDoughnut = new Chart(ctx, config);
+		}
+		
+		$.ajaxSetup({
+			async: false
+		});
+			
+		Nasional.init();	
+		
+		var config = {
+        type: 'doughnut',
+        data: {
+            datasets: [{
+                data: [2,2],
+                backgroundColor: [
+                    'rgb(255, 99, 132)',
+					'rgb(255, 159, 64)',
+					'rgb(75, 192, 192)',
+					'rgb(54, 162, 235)',
+                ]       
+            }],
+            labels: ['Red','Orange']
+        },
+        options: {
+            responsive: true,
+            legend: {
+                position: 'left',
+            },
+            title: {
+                display: true,
+                text: 'User Story Stats'
+            },
+            animation: {
+                animateScale: true,
+                animateRotate: true
+            }
+        }
+    };
+	</script>
+ 
+{% endblock %}
