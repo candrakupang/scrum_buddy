@@ -90,6 +90,7 @@
 		});
 	
 		var pid;
+		var error = 0;
 		var notes = [];
 		var mynote = {
 				resizable: true,						
@@ -129,23 +130,31 @@
 			return tmp;
 		}
 		
-		function getPoint(str){
+		function getPoint(str,str2){
 			var result = "";
 			str = str.split("\n");
 			for (i=0;i<str.length;i++){
 				if (str[i].substring(0,7).trim() == "Point :")
 					result = str[i].substring(7,str[i].length).trim();
 			}
+			if (result == ""){
+				alert("Story point of "+ str2 +" is invalid");
+				error = 1;
+			}	
 			return result;
 		}
 		
-		function getPriority(str){
+		function getPriority(str,str2){
 			var result = "";
 			str = str.split("\n");
 			for (i=0;i<str.length;i++){
 				if (str[i].substring(0,10).trim() == "Priority :")
 					result = str[i].substring(10,str[i].length).trim();
 			}
+			if (result == ""){
+				alert("Story priority of "+ str2 +" is invalid");
+				error = 1;
+			}	
 			return result;
 		}		
 		
@@ -166,8 +175,10 @@
 						heigth:fix(noteObject.data("coaStickyNote")["settings"]["noteDimension"]["height"]),
 						theme:noteObject.data("coaStickyNote")["settings"]["defaultTheme"]["value"],
 						id:noteObject.data("coaStickyNote")["settings"]["idUserStory"],
-						point:getPoint(noteObject.data("coaStickyNote")["settings"]["noteText"]),
-						priority:getPriority(noteObject.data("coaStickyNote")["settings"]["noteText"]),
+						point:getPoint(noteObject.data("coaStickyNote")["settings"]["noteText"],
+						noteObject.data("coaStickyNote")["settings"]["noteHeaderText"]),
+						priority:getPriority(noteObject.data("coaStickyNote")["settings"]["noteText"],
+						noteObject.data("coaStickyNote")["settings"]["noteHeaderText"]),
 						csrfmiddlewaretoken: '{{ csrf_token }}'
 					  },
 					  success: function (response) {}
@@ -175,8 +186,9 @@
 				}	
 				index++;
 				noteObject = $('#divStickyNotesContainer').data('coaStickyNote').getNoteBoxByIndex(index);
-			} 			
-			alert("data is saved");
+			}
+			if (error == 0)	
+				alert("data is saved");
 			location.reload(); 
 		}
 				
