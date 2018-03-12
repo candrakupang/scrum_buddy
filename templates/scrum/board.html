@@ -222,7 +222,7 @@
 						onNoteBoxTextUpdate: function (note) {note.settings.status = "1";},
 						};
 						notes.push(note);
-						$('#cblist').append('<input id="a1" type="checkbox" value='+data[i].pk+' /> '+data[i].fields.text+'<br />');
+						$('#cblist').append('<input id="a1" type="checkbox" value='+data[i].pk+' /> '+data[i].fields.header+'<br />');
 						if (data[i].fields.theme == "sticky-note-pink-theme")
 							newStory++;
 						else if (data[i].fields.theme == "sticky-note-blue-theme")   
