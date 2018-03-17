@@ -1,19 +1,18 @@
 
-function Peta() {
-	// ********* Maps Variable
+function Geospatial() {
+	// ********* Global Variable
 	var map,vlayer;
 	var size = new OpenLayers.Size(20, 20); 
 	var offset = new OpenLayers.Pixel(-(size.w / 2), -size.h);
 	var iconred;
 	var markers_red = new OpenLayers.Layer.Markers("User Story");
 	var markers_blue = new OpenLayers.Layer.Markers("Sprint");
-	
-
-	// ********* Connection Global Variabel
 	var  lonLat, road, aerial, osmlayer, hybrid, terrain;
 
+	// main function 
 	this.init = function() {
 		
+	/**  init map object  */	
 	map = new OpenLayers.Map('map', {
 			projection : "EPSG:900913"
 		});
@@ -59,7 +58,7 @@ function Peta() {
 		iconblue = new OpenLayers.Icon(OpenLayers.Util.getImageLocation("blue.png"), size, offset);			
 	}
 
-	// private
+	// private :  define base layer
 	var initBaseMap = function() {
 		osmlayer = new OpenLayers.Layer.OSM( "OSM Map");
 		road = new OpenLayers.Layer.Google("Google Maps", {
@@ -79,6 +78,7 @@ function Peta() {
 			    {type: google.maps.MapTypeId.TERRAIN, numZoomLevels: 20});
 	}
 
+	/**  Set map center  */
 	this.setMapCenter = function(lon, lat, zoom) {
 		lonLat = new OpenLayers.LonLat(lon, lat).transform(
 				new OpenLayers.Projection("EPSG:4326"), map
@@ -86,7 +86,7 @@ function Peta() {
 		map.setCenter(lonLat, zoom);
 	}
 
-	
+	/**  Add marker to map  */
 	this.addMarker = function(i,project,story) {	
 		lonLat = new OpenLayers.LonLat(project[i].fields.longitude, project[i].fields.latitude).transform(
 				new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
@@ -103,7 +103,7 @@ function Peta() {
 		});
 		
 		markers_red.markers[i].events.register('mousedown', marker,	function(evt) {
-			window.location.href = "/scrum/board/" + project[i].pk;
+			window.location.href = "/scrum/userstory/" + project[i].pk;
 		});
 		
 		markers_blue.markers[i].events.register('mousedown', marker,	function(evt) {
@@ -111,6 +111,7 @@ function Peta() {
 		});
 	}
 	
+	/**  Set data for project details table  */
 	function generateTable(project) {
 		$("#div2").show();
 		$("#div3").hide();
@@ -133,6 +134,7 @@ function Peta() {
 		row.append($("<td align='left'>"+project.fields.status+"</td>"));
 	}
 	
+	/**  create chart for user story  */
 	function generateChart(story,projectName) {
 		$("#div1").show();
 		var ds;

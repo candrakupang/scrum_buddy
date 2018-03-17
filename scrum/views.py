@@ -10,6 +10,9 @@ from django.core import serializers
 
 def getstory(request):
 	projectID = request.GET.get("id", "")
+	if projectID == "":
+		projectID = -1
+	
 	try:
 		p = Project.objects.get(id=projectID)
 	except Project.DoesNotExist:
@@ -139,7 +142,7 @@ def backlog(request,projectID):
 	context_dict['prj'] = p
 	return render(request, 'scrum/backlog.html', context_dict)
 	
-def board(request,projectID):
+def userstory(request,projectID):
 	context_dict = {}
 	if projectID == "0":
 		p = None
@@ -159,7 +162,7 @@ def board(request,projectID):
 	context_dict['projects'] = Project.objects.all()
 	context_dict['stories'] = Story.objects.filter(project = p)
 	context_dict['prj'] = p
-	return render(request, 'scrum/board.html', context_dict)	
+	return render(request, 'scrum/userstory.html', context_dict)	
 	
 def register(request):
 	if request.method == 'POST':

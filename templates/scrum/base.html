@@ -9,8 +9,8 @@
 		<link href="{% static 'css/jquery-ui.css' %}" rel="stylesheet" />
 		<link href="{% static 'css/jquery.ui.resizable.css' %}" rel="stylesheet" />
 		<script src="{% static 'js/OpenLayers.js' %}"></script>
-		<script src="{% static 'js/nasional.js' %}"></script>
-		<script src="{% static 'js/peta.js' %}"></script>
+		<script src="{% static 'js/geospatial.js' %}"></script>
+		<script src="{% static 'js/map.js' %}"></script>
 		<script src="{% static 'js/Chart.js' %}"></script>
 	</head>
 	
@@ -24,7 +24,7 @@
 				</div>
 				<ul class="nav navbar-nav">
 				  <li><a href="{% url 'project' %}">Project</a></li>
-				  <li><a href="{% url 'board' 0%}">User Story</a></li>
+				  <li><a href="{% url 'userstory' 0%}">User Story</a></li>
 				  <li><a href="{% url 'sprint' 0%}">Sprint</a></li>
 				  <li><a href="{% url 'backlog' 0%}">Backlog</a></li>		  
 				  <li><a href="{% url 'geospatial' %}">Geospatial</a></li>		  

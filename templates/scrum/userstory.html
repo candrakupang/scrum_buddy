@@ -161,7 +161,7 @@
 				if (noteObject.data("coaStickyNote")["settings"]["status"] == "1") {					
 					$.ajax({
 						type: 'post',
-						url: '/scrum/board/{{prj.id}}/',
+						url: '/scrum/userstory/{{prj.id}}/',
 						data: {
 						text:noteObject.data("coaStickyNote")["settings"]["noteText"],
 						header:noteObject.data("coaStickyNote")["settings"]["noteHeaderText"],

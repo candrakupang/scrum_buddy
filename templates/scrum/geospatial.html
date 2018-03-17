@@ -2,8 +2,9 @@
 {% load staticfiles %}
 {% block body_block %}
 {% if user.is_authenticated %}		
-	
+		
 	<div class="row">	
+		<!--  Geospatial section   -->
 		<div class="col-sm-6">
 			<div class="panel panel-primary">
 			    <div class="panel-heading" align="center" style="background-color:#99ff99">
@@ -12,6 +13,8 @@
 				<div style="height: 83%;width:100%" id="map" class="map"></div>										
 			</div>
 		</div>
+		
+		<!--  Project details and chart section   -->
 		<div class="col-sm-6">
 			<div class="panel panel-primary" id="div3">
 			    <div class="panel-heading" align="center" style="background-color:#99ff99">
@@ -22,6 +25,7 @@
 				</table>
 			</div>
 		
+			<!--  Project details section   -->
 			<div class="panel panel-primary" id="div1" style="display:none">
 			    <div class="panel-heading" align="center" style="background-color:#99ff99">
 					<font color="black"><b>Project Details</b></font>
@@ -31,6 +35,7 @@
 				</table>
 			</div>
 			
+			<!--  Chart section   -->
 			<div class="panel panel-primary" id="div2" style="display:none">
 			    <div class="panel-heading" align="center" style="background-color:#99ff99">
 					<font color="black"><b>User Story</b></font>
@@ -41,18 +46,18 @@
 	</div>
 	
 	
-	
-
+	<!--  External API  : google map   -->
 	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDV2eQsorN85cuup0zFn4n_gm1EdJ-Ekrk&callback=initMap"></script>
 	
+	<!--  Local Script   -->
 	<script type="text/javascript">	
 		
 		function init(){
 			var ctx = document.getElementById("chart-area").getContext("2d");
 			myDoughnut = new Chart(ctx, config);
 		}
-				
-		Nasional.init();	
+		
+		ScrumMap.init();	
 		
 		var config = {
         type: 'doughnut',
