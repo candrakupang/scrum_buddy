@@ -1,23 +1,72 @@
+
 {% extends 'scrum/base.html' %}
-
 {% block body_block %}		
-	
 {% if user.is_authenticated %}	
-	
-<div class="row">	
 
-	<div class="col-sm-12">
-		<div class="panel panel-primary">
-	  	    <div class="panel-heading" align="center" style="background-color:#ffc266"><font color="#0000b3"><b>Project List</b></font></div>										
-			<table class="table table-bordered table-condensed table-hover"> 
-				<tr style="background-color:#ffe0b3;">
-					<th class="text-center">Id</th><th class="text-center">Name</th><th class="text-center">Description</th>
-					<th class="text-center">Address</th><th class="text-center">Status</th><th class="text-center">Delete</th>
-				</tr>
-			   <tbody id="ProjectList"></tbody>
-			   {% if projects %}
+	<!-- Project List Section -->
+	<div class="row">	
+		<div class="col-sm-12">
+			<div class="panel panel-primary">
+				<div class="panel-heading" align="center" style="background-color:#ffc266">
+					<font color="#0000b3"><b>Project List</b></font>
+				</div>
+				
+				<table class="table table-bordered table-condensed table-hover"> 
+					<tr style="background-color:#ffe0b3;">
+						<th class="text-center">Id</th><th class="text-center">Name</th><th class="text-center">Description</th>
+						<th class="text-center">Address</th><th class="text-center">Status</th><th class="text-center">Delete</th>
+					</tr>
+				   <tbody id="ProjectList"></tbody>
+															
+				</table>
+			</div>
+			
+			<div>
+				<button onclick="addProject()" type="button" class="btn btn-success">New</button>		
+				<button onclick="editProject()" type="button" class="btn btn-warning">Edit</button>
+				<button onclick="deleteProject()" type="button" class="btn btn-danger">Delete</button>			
+			</div>
+		</div>
+	</div>
+
+
+	<!-- Modal window for creating and editing project details -->
+	<div class="modal fade" id="modalProject" role="dialog">
+		<div class="modal-dialog">					
+			<!-- Modal content-->
+			<div class="modal-content">
+				<div class="modal-header" style="background-color:#ffc266;text-align:center;">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h3 class="modal-title">Project Details</h3>
+				</div>
+				
+				<div class="modal-body" align="center">
+					<form id="project_form" method="post" action="{% url 'project' %}">
+						{% csrf_token %}					  
+						<table>
+							{% for field in form.visible_fields %}
+							<tr>
+								<td>{{ field.label_tag }}</td><td>  &nbsp</td><td>{{ field }}</td>
+							</tr>	
+							{% endfor %}
+						</table>
+						<div align="right">
+							<button type="submit" class="btn btn-danger">Save</button>
+						</div>
+					</form>					
+				</div>								
+			</div>
+		</div>
+	</div>
+	 
+
+	<!-- local script --> 
+	<script>
+
+		/** Provide page with data of projects  */
+		function init(){
+			{% if projects %}
 				{% for project in projects %}												
-					<script>
 					row = $("<tr class='table'></tr>"); 
 					$("#ProjectList").append(row);
 					row.append($("<td align='center'>{{ project.id }}</td>"));
@@ -25,110 +74,69 @@
 					row.append($("<td align='left'>{{ project.description }}</td>"));								
 					row.append($("<td align='left'>{{ project.address }}</td>"));								
 					row.append($("<td align='left'>{{ project.status }}</td>"));
-					row.append($("<td align='center'><input type='checkbox' value='{{project.id}}'/></td>"));
-					</script>
+					row.append($("<td align='center'><input type='checkbox' value='{{project.id}}'/></td>"));		
 				{% endfor %}							
-			{% endif %}											
-			</table>
-		</div>
+			{% endif %}
 		
-		<div>
-			<button onclick="add()" type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal">New</button>		
-			<button onclick="edit()" type="button" class="btn btn-warning" data-toggle="modal" data-target="#myModal">Edit</button>
-			<button onclick="del()" type="button" class="btn btn-danger">Delete</button>			
-		</div>
-	</div>
-</div>
-
-<br>
-	
- <!-- Modal -->
-		  <div class="modal fade" id="myModal" role="dialog">
-			<div class="modal-dialog">
+			$("#id_id").hide();
+			$('label[for="id_id"]').hide();
+		}
+		
+		/** Delete selected projects  */
+		function deleteProject(){
+			var isDelete = 0;
+			var checked = jQuery('input:checkbox:checked').map(function () {
+				isDelete = 1;
+				$.ajax({
+					type: 'post',
+					url: '/scrum/xproject/',
+					data: {id: $(this).val(),csrfmiddlewaretoken: '{{ csrf_token }}'},
+					success: function (response) {}
+				});
+			}).get();	
 			
-			  <!-- Modal content-->
-			  <div class="modal-content">
-				<div class="modal-header" style="background-color:#ffc266;text-align:center;">
-				  <button type="button" class="close" data-dismiss="modal">&times;</button>
-				  <h3 class="modal-title">Project Details</h3>
-				</div>
-				<div class="modal-body" align="center">
-					<form id="project_form" method="post" action="{% url 'project' %}">
-						{% csrf_token %}					  
-						<table>
-						{% for field in form.visible_fields %}
-						<tr>
-							<td>{{ field.label_tag }}</td><td>  &nbsp</td><td>{{ field }}</td>
-						</tr>	
-						{% endfor %}
-						</table>
-						<div align="right">
-							<button type="submit" class="btn btn-danger">Save</button>
-						</div>
-					</form>					
-				</div>								
-			  </div>
-			  
-			</div>
-		  </div>
- 
-
-<script>
-var projectID;
-
-	function init(){
-		$("#id_id").hide();
-		$('label[for="id_id"]').hide();
-	}
-	
-	function del(){
-		var isDelete = 0;
-		var checked = jQuery('input:checkbox:checked').map(function () {
-			isDelete = 1;
-			$.ajax({
-				type: 'post',
-				url: '/scrum/xproject/',
-				data: {id: $(this).val(),csrfmiddlewaretoken: '{{ csrf_token }}'},
-				success: function (response) {}
-			});
-		}).get();	
-		if (isDelete == 1){
-			alert("Project is deleted");location.reload();
-		} else
-			alert("There is no project selected");
-	}
-	
-	function add(){
-		$('#id_id').val(0);
-		$('#id_name').val("");
-		$('#id_description').val("");
-		$('#id_address').val("");
-		$('#id_status').val("");
-		$('#id_longitude').val("");
-		$('#id_latitude').val("");
-	}
-	
-	function edit(){
-		var isEdit = 0;
-		var checked = jQuery('input:checkbox:checked').map(function () {
-			isEdit = 1;
-			$.ajax({
-				url: '/scrum/getproject/',
-				data: {id: $(this).val()},
-				success: function (data) {
-					$('#id_id').val(data[0].pk);
-					$('#id_name').val(data[0].fields.name);
-					$('#id_description').val(data[0].fields.description);
-					$('#id_address').val(data[0].fields.address);
-					$('#id_status').val(data[0].fields.status);
-					$('#id_longitude').val(data[0].fields.longitude);
-					$('#id_latitude').val(data[0].fields.latitude);					
-				}
-			});
-		}).get();	
+			if (isDelete == 1)
+			{
+				alert("Project is deleted");location.reload();
+			} else
+				alert("There is no project selected");
+		}
 		
-	}
-</script>
- {% endif %}	
-{% endblock %}
+		/** Create new projects  */
+		function addProject(){
+			$('#modalProject').modal('show');
+			$('#id_id').val(0);
+			$('#id_name').val("");
+			$('#id_description').val("");
+			$('#id_address').val("");
+			$('#id_status').val("");
+			$('#id_longitude').val("");
+			$('#id_latitude').val("");
+		}
+		
+		/** Edit selected projects  */
+		function editProject(){
+			$('#modalProject').modal('show');
+			var isEdit = 0;
+			var checked = jQuery('input:checkbox:checked').map(function () {
+				isEdit = 1;
+				$.ajax({
+					url: '/scrum/getproject/',
+					data: {id: $(this).val()},
+					success: function (data) {
+						$('#id_id').val(data[0].pk);
+						$('#id_name').val(data[0].fields.name);
+						$('#id_description').val(data[0].fields.description);
+						$('#id_address').val(data[0].fields.address);
+						$('#id_status').val(data[0].fields.status);
+						$('#id_longitude').val(data[0].fields.longitude);
+						$('#id_latitude').val(data[0].fields.latitude);					
+					}
+				});
+			}).get();		
+		}
+	</script>
 
+
+{% endif %}	
+{% endblock %}

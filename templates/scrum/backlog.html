@@ -1,24 +1,77 @@
 {% extends 'scrum/base.html' %}
-
 {% block body_block %}		
-	
 {% if user.is_authenticated %}	
 	
-<h4 align="center"><b onclick="myFunction()" id="mytitle">--</b></h4><br>
-<div class="row">	
-	<div class="col-sm-12">
-		<div class="panel panel-primary">
-	  	    <div class="panel-heading" align="center" style="background-color:#ffc266"><font color="#0000b3"><b>Project Backlog</b></font></div>										
-			<table class="table table-bordered table-condensed table-hover"> 
-				<tr style="background-color:#ffe0b3;">
-					<th class="text-center">No</th><th class="text-center">Task</th><th class="text-center">Priority</th>
-					<th class="text-center">Status</th><th class="text-center">Point</th>
-				</tr>
-			   <tbody id="ProjectList"></tbody>
-			   {% if stories %}
-			   <script>var counter = 0;</script>
-				{% for story in stories %}												
-					<script>
+	<!--  Backlog details section   -->
+	<h4 align="center"><b onclick="displayProjectList()" id="projectTitle">--</b></h4><br>
+	<div class="row">	
+		<div class="col-sm-12">
+			<div class="panel panel-primary">
+				<div class="panel-heading" align="center" style="background-color:#ffc266"><font color="#0000b3">
+					<b>Project Backlog</b></font>
+				</div>										
+				<table class="table table-bordered table-condensed table-hover"> 
+					<tr style="background-color:#ffe0b3;">
+						<th class="text-center">No</th><th class="text-center">Task</th><th class="text-center">Priority</th>
+						<th class="text-center">Status</th><th class="text-center">Point</th>
+					</tr>
+				   <tbody id="ProjectList"></tbody>
+				   
+				</table>
+			</div>
+			<div>
+				<button onclick="sprint()" type="button" class="btn btn-success">Sprint</button>		
+				<button onclick="us()" type="button" class="btn btn-danger">User Story</button>			
+			</div>
+		</div>
+	</div>
+
+	<!-- modal window for selecting active project-->
+	<div class="modal fade" id="modalProject" role="dialog">
+		<div class="modal-dialog">			
+			<!-- Modal content-->
+			<div class="modal-content">
+			<div class="modal-header" style="background-color:#ffc266;text-align:center;">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title"><b>Project List</b></h4>
+			</div>
+			<div class="modal-body">
+				<div id="cblist"></div>
+			</div>
+							
+			<div class="modal-footer">
+				<button onclick="selectProject()" type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Select</button>
+			</div>
+		  </div>
+		</div>
+	</div>
+
+	
+	<!-- local script -->
+	<script>
+	
+		/** define global variabel  */
+		var projectID;
+
+		/**  Pull initial data of project and backlog */
+		function init(){		
+			
+			/**  init project data  */
+			{% if projects %}
+				{% for project in projects %}																
+					$('#cblist').append('<input type="checkbox" value={{project.pk}} /> {{project.name}}<br />');
+				{% endfor %}
+			{% endif %}	
+				
+			$('#projectTitle').html("Project : {{ prj.name }}");
+			projectID = "{{prj.pk}}";
+			if ("{{prj.pk}}" == "")
+				$('#modalProject').modal('show'); 		
+
+			/**  init backlog data  */	
+			{% if stories %}
+				var counter = 0;
+				{% for story in stories %}													
 					counter++;
 					row = $("<tr class='table'></tr>"); 
 					$("#ProjectList").append(row);
@@ -31,76 +84,33 @@
 						row.append($("<td align='left'>Started</td>"));
 					else
 						row.append($("<td align='left'>Finished</td>"));
-					row.append($("<td align='left'>{{ story.point }}</td>"));					
-					</script>
+					row.append($("<td align='left'>{{ story.point }}</td>"));		
 				{% endfor %}							
 			{% endif %}
-			</table>
-		</div>
+		}
 		
-		<div>
-			<button onclick="sprint()" type="button" class="btn btn-success">Sprint</button>		
-			<button onclick="us()" type="button" class="btn btn-danger">User Story</button>			
-		</div>
-	</div>
-</div>
-
-
+		/**  Redirect page based on selected project  */
+		function selectProject(){
+			$("#cblist input:checked").each(function() {
+				window.location.href = "/scrum/backlog/" + $(this).val();
+			});		
+		}
+		
+		/**  Redirect page to spint page  */
+		function sprint(){
+			window.location.href = "/scrum/sprint/" + projectID;
+		}
+		
+		/**  Redirect page to user story page  */
+		function us(){
+			window.location.href = "/scrum/board/" + projectID;
+		}
+		
+		/**  Reload page based on selected project  */
+		function displayProjectList() {
+			$('#modalProject').modal('show');
+		}
+	</script>
 	
-
-		  <!-- Modal -->
-		  <div class="modal fade" id="myProject" role="dialog">
-			<div class="modal-dialog">			
-			  <!-- Modal content-->
-			  <div class="modal-content">
-				<div class="modal-header" style="background-color:#ffc266;text-align:center;">
-				  <button type="button" class="close" data-dismiss="modal">&times;</button>
-				  <h4 class="modal-title"><b>Project List</b></h4>
-				</div>
-				<div class="modal-body">
-					<div id="cblist"></div>
-				</div>
-			{% if projects %}
-				{% for project in projects %}												
-					<script>
-					$('#cblist').append('<input type="checkbox" value={{project.pk}} /> {{project.name}}<br />');
-					</script>
-				{% endfor %}							
-			{% endif %}				
-				<div class="modal-footer">
-					<button onclick="selectProject()" type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Select</button>
-				</div>
-			  </div>
-			</div>
-		  </div>
-
-<script>
-	var projectID;
-
-	function init(){
-		$('#mytitle').html("Project : {{ prj.name }}");
-		projectID = "{{prj.pk}}";
-		if ("{{prj.pk}}" == "")
-			$('#myProject').modal('show'); 		
-	}
-	
-	function selectProject(){
-		$("#cblist input:checked").each(function() {
-			window.location.href = "/scrum/backlog/" + $(this).val();
-		});		
-	}
-	
-	function sprint(){
-		window.location.href = "/scrum/sprint/" + projectID;
-	}
-	
-	function us(){
-		window.location.href = "/scrum/board/" + projectID;
-	}
-	
-	function myFunction() {
-		$('#myProject').modal('show');
-	}
-</script>
 {% endif %}	
 {% endblock %}

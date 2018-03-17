@@ -1,49 +1,50 @@
 {% load staticfiles %}
 <html>
 	<head>
-		<title>UserStoryBoard</title>		
+		<title>Scrum Buddy</title>		
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>		
-		<link href="{% static "css/jquery.stickynote.css" %}" rel="stylesheet" />
-		<link href="{% static "css/StickyNoteDemo.css" %}" rel="stylesheet" />
-		<link href="{% static "css/jquery-ui.css" %}" rel="stylesheet" />
-		<link href="{% static "css/jquery.ui.resizable.css" %}" rel="stylesheet" />
-		<script src="{% static "js/OpenLayers.js" %}"></script>
-		<script src="{% static "js/nasional.js" %}"></script>
-		<script src="{% static "js/peta.js" %}"></script>
-		<script src="{% static "js/Chart.js" %}"></script>
+		<link href="{% static 'css/jquery.stickynote.css' %}" rel="stylesheet" />
+		<link href="{% static 'css/jquery-ui.css' %}" rel="stylesheet" />
+		<link href="{% static 'css/jquery.ui.resizable.css' %}" rel="stylesheet" />
+		<script src="{% static 'js/OpenLayers.js' %}"></script>
+		<script src="{% static 'js/nasional.js' %}"></script>
+		<script src="{% static 'js/peta.js' %}"></script>
+		<script src="{% static 'js/Chart.js' %}"></script>
 	</head>
-	<body onload="init()">
-	<div class="container">
-	<nav class="navbar navbar-inverse">
-	  <div class="container-fluid">
-	  {% if user.is_authenticated %}
-		<div class="navbar-header">
-		  <a class="navbar-brand" href="{% url 'index' %}">Scrum Buddy</a>
-		</div>
-		<ul class="nav navbar-nav">
-		  <li><a href="{% url 'project' %}">Project</a></li>
-		  <li><a href="{% url 'board' 0%}">User Story</a></li>
-		  <li><a href="{% url 'sprint' 0%}">Sprint</a></li>
-		  <li><a href="{% url 'backlog' 0%}">Backlog</a></li>		  
-		  <li><a href="{% url 'geospatial' %}">Geospatial</a></li>		  
-		</ul>
-		{% endif %}
-		 <ul class="nav navbar-nav navbar-right">		 			
-		  	{% if user.is_authenticated %}
-				<li><a href="#"><span class="glyphicon glyphicon-user"></span> {{ user.username }}</a></li>
-				<li><a href="{% url 'logout' %}"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>				
-			{% else %}
-				<li><a href="{% url 'register' %}"><span class="glyphicon glyphicon-pencil"></span> Register</a></li>
-				<li><a href="{% url 'login' %}"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
-			{% endif %}	
-		</ul>
-	  </div>
-	</nav>
-		
-	{% block body_block %}
-	{% endblock %}
 	
+	<body onload="init()">
+		<div class="container">
+			<nav class="navbar navbar-inverse">
+			  <div class="container-fluid">
+			  {% if user.is_authenticated %}
+				<div class="navbar-header">
+				  <a class="navbar-brand" href="{% url 'index' %}">Scrum Buddy</a>
+				</div>
+				<ul class="nav navbar-nav">
+				  <li><a href="{% url 'project' %}">Project</a></li>
+				  <li><a href="{% url 'board' 0%}">User Story</a></li>
+				  <li><a href="{% url 'sprint' 0%}">Sprint</a></li>
+				  <li><a href="{% url 'backlog' 0%}">Backlog</a></li>		  
+				  <li><a href="{% url 'geospatial' %}">Geospatial</a></li>		  
+				</ul>
+				{% endif %}
+				 <ul class="nav navbar-nav navbar-right">		 			
+					{% if user.is_authenticated %}
+						<li><a href="#"><span class="glyphicon glyphicon-user"></span> {{ user.username }}</a></li>
+						<li><a href="{% url 'logout' %}"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>				
+					{% else %}
+						<li><a href="{% url 'register' %}"><span class="glyphicon glyphicon-pencil"></span> Register</a></li>
+						<li><a href="{% url 'login' %}"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+					{% endif %}	
+				</ul>
+			  </div>
+			</nav>
+			
+			{% block body_block %}
+			{% endblock %}
+		</div>
+		<script>$.ajaxSetup({async: false});</script>
 	</body>
 <html>		

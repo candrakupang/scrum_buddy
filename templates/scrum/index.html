@@ -5,31 +5,32 @@
 <br><br>
  <div class="row">	
 	{% if user.is_authenticated %}
-	<div class="col-sm-6">
-		<div class="panel panel-primary">
-	    <div class="panel-heading" align="center" style="background-color:#99ff99"><font color="black"><b  id="mytitle">Welcome to Scrum Project </b></font></div>
-		<br>
-		<p><b>&nbsp&nbsp&nbspSteps in creating a scrum project : </b></p>
-		<ul>
-			<li><i class="glyphicon glyphicon-chevron-right"></i> <a href="{% url 'project' %}">Create Project</a></li>
-			<li><i class="glyphicon glyphicon-chevron-right"></i> <a href="{% url 'board' 0%}">Create User Story</a></li>
-			<li><i class="glyphicon glyphicon-chevron-right"></i> <a href="{% url 'sprint' 0%}">Create Sprint</a></li>
-			<li><i class="glyphicon glyphicon-chevron-right"></i> <a href="{% url 'backlog' 0%}">Monitor Backlog</a></li>
-		</ul>
-		<br><br><br>
+		<div class="col-sm-6">
+			<div class="panel panel-primary">
+			<div class="panel-heading" align="center" style="background-color:#99ff99">
+				<font color="black"><b  id="mytitle">Welcome to Scrum Project </b></font>
+			</div>
+			
+			<br><p><b> &nbsp&nbsp Steps in creating a scrum project : </b></p>
+			
+			<ul>
+				<li><i class="glyphicon glyphicon-chevron-right"></i> <a href="{% url 'project' %}">Create Project</a></li>
+				<li><i class="glyphicon glyphicon-chevron-right"></i> <a href="{% url 'board' 0%}">Create User Story</a></li>
+				<li><i class="glyphicon glyphicon-chevron-right"></i> <a href="{% url 'sprint' 0%}">Create Sprint</a></li>
+				<li><i class="glyphicon glyphicon-chevron-right"></i> <a href="{% url 'backlog' 0%}">Monitor Backlog</a></li>
+			</ul><br><br><br>
+			</div>
 		</div>
-	</div>
-	
-	<div class="col-sm-6">	
-		<div align="center"><img style="width:100%" src="{% static "images/scrum2.jpg" %}"/></div>
-	</div>
+		
+		<div class="col-sm-6">	
+			<div align="center"><img style="width:100%" src="{% static 'images/scrum2.jpg' %}"/></div>
+		</div>
 	{% else %}
 		<div class="col-sm-12">	
-		<div align="center"><img style="width:70%" src="{% static "images/Agile.png" %}"/></div>
-	</div>
+			<div align="center"><img style="width:70%" src="{% static 'images/Agile.png' %}"/></div>
+		</div>
 	{% endif %}
 
 </div>
 
 {% endblock %}
-
