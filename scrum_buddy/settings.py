@@ -140,4 +140,4 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-STATIC_ROOT = '/home/natadecoco/scrum_buddy/static/'
+
