@@ -53,9 +53,9 @@ class ProjectForm(forms.ModelForm):
 class SprintForm(forms.ModelForm):
 	id = forms.IntegerField()
 	iteration = forms.CharField(max_length=30)
-	startDate = forms.CharField(max_length=20)
-	endDate = forms.CharField(max_length=20)
-	releaseDate = forms.CharField(max_length=20)
+	startDate = forms.CharField(widget=forms.TextInput(attrs={'class':'startDate'}))
+	endDate = forms.CharField(widget=forms.TextInput(attrs={'class':'endDate'}))
+	releaseDate = forms.DateField(widget=forms.TextInput(attrs={'class':'releaseDate'}))
 	def __init__(self, *args, **kwargs):
 		myproject = kwargs.pop("prj")
 		super(SprintForm, self).__init__(*args, **kwargs)
@@ -64,4 +64,4 @@ class SprintForm(forms.ModelForm):
 	class Meta:
  # Provide an association between the ModelForm and a model
 		model = Sprint
-		exclude = ('project',)	
+		exclude = ('project',)

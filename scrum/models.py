@@ -43,4 +43,4 @@ class Sprint(models.Model):
 	endDate = models.CharField(max_length=20, default='1/1/2018')
 	releaseDate = models.CharField(max_length=20, default='1/1/2018')
 	def __str__(self):
-		return self.text
+		return self.iteration

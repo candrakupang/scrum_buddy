@@ -24,7 +24,7 @@
 			<div>
 				<button onclick="addSprint()" type="button" class="btn btn-success">New</button>		
 				<button onclick="editSprint()" type="button" class="btn btn-warning">Edit</button>
-				<button onclick="deleteSprint" type="button" class="btn btn-danger">Delete</button>			
+				<button onclick="deleteSprint()" type="button" class="btn btn-danger">Delete</button>			
 			</div>
 		</div>
 	</div>
@@ -82,6 +82,11 @@
 	<!-- local script -->
 	<script>
 	
+		$(function () {$('.startDate').datetimepicker({format:'YYYY-MM-DD'});});
+		$(function () {$('.endDate').datetimepicker({format:'YYYY-MM-DD'});});
+		$(function () {$('.releaseDate').datetimepicker({format:'YYYY-MM-DD'});});
+	
+	
 		/**  Pull initial data of project and sprint */
 		function init(){
 		
@@ -130,7 +135,7 @@
 		
 		/**  Delete selected sprint  */
 		function deleteSprint(){
-			var isDelete = 0;
+			var isDelete = 0; 
 			var checked = jQuery('input:checkbox:checked').map(function () {
 				isDelete = 1;
 				$.ajax({
@@ -160,6 +165,7 @@
 		
 		/**  Edit selected sprint  */
 		function editSprint(){
+			$('#modalSprint').modal('show');
 			var isEdit = 0;
 			var checked = jQuery('input:checkbox:checked').map(function () {
 				isEdit = 1;

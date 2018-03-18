@@ -79,10 +79,7 @@
 		</div>
 	</div>
 				
-	<!-- Library for notes object -->
-    <script src="{% static 'js/jquery-1.5.2.min.js' %}"></script>
-    <script src="{% static 'js/jquery-ui-1.7.3.min.js' %}"></script>
-    <script src="{% static 'js/jquery.stickynote.js' %}"></script>
+	<!-- Library for notes object -->    
 	<script>
 	
 		/**  Init global variable  */	
@@ -112,7 +109,7 @@
 		/**  Reload page based on selected project  */
 		function selectProject(){
 			$("#plist input:checked").each(function() {
-				window.location.href = "/scrum/board/" + $(this).val();
+				window.location.href = "/scrum/userstory/" + $(this).val();
 			});		
 		}		
 		
