@@ -13,10 +13,10 @@ def populate():
     print('----------------------\n')
 
     add_project('1', 'WarZone', 'Android Game', 'Glasgow', 'On Progress', '-4.251806', '55.864237')
-    add_story('1','1', 'As player I want to drive tanks\nPoint : 3\nPriority : High', 'Tanks', '60px','850px', '200px', '100px', 'sticky-note-green-theme', '3', 'high')
+    add_story('1','1', 'As player I want to drive tanks\nPoint : 3\nPriority : High', 'Tanks', '200px','50px', '200px', '100px', 'sticky-note-green-theme', '3', 'high')
     add_story('1', '2', 'As player I want to fly planes\nPoint : 3\nPriority : High', 'Planes', '60px', '50px', '200px',
               '100px', 'sticky-note-pink-theme', '3', 'high')
-    add_story('1', '3', 'As player I want to ride motorcycles\nPoint : 2\nPriority : Medium', 'Motorcycles', '60px', '590px', '200px',
+    add_story('1', '3', 'As player I want to ride motorcycles\nPoint : 2\nPriority : Medium', 'Motorcycles', '200px', '320px', '200px',
               '100px', 'sticky-note-blue-theme', '2', 'high')
     add_story('1', '4', 'As player I want to defend a base\nPoint : 4\nPriority : Low', 'Defend Base', '60px',
               '320px', '200px', '100px', 'sticky-note-pink-theme', '4', 'high')
