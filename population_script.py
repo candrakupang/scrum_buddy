@@ -21,10 +21,10 @@ def populate():
     add_story('1', '4', 'As player I want to defend a base\nPoint : 4\nPriority : Low', 'Defend Base', '60px',
               '320px', '200px', '100px', 'sticky-note-pink-theme', '4', 'high')
 
-    add_sprint('1','1','1','1st','01/04/2018','07/04/2018','15/04/2018')
-    add_sprint('1','2','2','2nd','08/04/2018','14/04/2018','15/04/2018')
-    add_sprint('1','3','3','3rd','15/04/2018','21/04/2018','30/04/2018')
-    add_sprint('1','4','4','4th','21/04/2018','28/04/2018','30/04/2018')	
+    add_sprint('1','1','1','1st','2018-04-01','2018-04-07','2018-04-15')
+    add_sprint('1','2','2','2nd','2018-04-08','2018-04-14','2018-04-15')
+    add_sprint('1','3','3','3rd','2018-04-15','2018-04-21','2018-04-30')
+    add_sprint('1','4','4','4th','2018-04-22','2018-04-28','2018-04-30')	
 def add_project(id, name, description, address, status, longitude, latitude):
     p, created = Project.objects.get_or_create(id=id, name=name, description=description, address=address, status=status, longitude=longitude, latitude=latitude)
     return p
